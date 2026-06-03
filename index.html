@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VNPT Thu Cước Pro</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <meta name="theme-color" content="#0066cc" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>VNPT Thu Cước Pro</h1>
+      <p>Web app + Supabase Database</p>
+    </div>
+    <div class="header-actions">
+      <span id="userEmail" class="user-email"></span>
+      <button id="logoutBtn" class="small-btn hidden">Đăng xuất</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="setupBox" class="setup-box hidden">
+      <h2>Chưa cấu hình Supabase</h2>
+      <p>Mở file <b>config.js</b>, nhập <b>SUPABASE_URL</b> và <b>SUPABASE_ANON_KEY</b> lấy trong Supabase Project Settings.</p>
+    </section>
+
+    <section id="authBox" class="auth-box">
+      <h2>Đăng nhập nhân viên</h2>
+      <p>Dùng email và mật khẩu đã tạo trong Supabase Authentication.</p>
+      <div class="auth-grid">
+        <input id="emailInput" type="email" placeholder="Email đăng nhập" autocomplete="email" />
+        <input id="passwordInput" type="password" placeholder="Mật khẩu" autocomplete="current-password" />
+      </div>
+      <div class="auth-actions">
+        <button id="loginBtn">Đăng nhập</button>
+        <button id="signupBtn" class="secondary">Tạo tài khoản</button>
+      </div>
+      <p class="hint">Nếu chỉ dùng nội bộ, nên tạo tài khoản cho từng nhân viên trong Supabase rồi tắt đăng ký công khai.</p>
+    </section>
+
+    <section id="appBox" class="hidden">
+      <section class="dashboard">
+        <div class="card">
+          <span>Tổng khách</span>
+          <strong id="totalCount">0</strong>
+          <small>Trong dữ liệu</small>
+        </div>
+        <div class="card">
+          <span>Đã thu</span>
+          <strong id="paidCount">0</strong>
+          <small id="paidMoney">0đ</small>
+        </div>
+        <div class="card">
+          <span>Còn nợ</span>
+          <strong id="unpaidCount">0</strong>
+          <small id="unpaidMoney">0đ</small>
+        </div>
+        <div class="card">
+          <span>Hẹn lại</span>
+          <strong id="promiseCount">0</strong>
+          <small>Cần xử lý</small>
+        </div>
+      </section>
+
+      <section class="toolbar">
+        <input id="searchInput" type="search" placeholder="Tìm tên, SĐT, mã KH, địa chỉ, ô địa bàn..." />
+        <select id="areaFilter">
+          <option value="all">Tất cả Ô địa bàn</option>
+        </select>
+        <select id="statusFilter">
+          <option value="all">Tất cả trạng thái</option>
+          <option value="Chưa thu">Chưa thu</option>
+          <option value="Đã thu">Đã thu</option>
+          <option value="Hẹn lại">Hẹn lại</option>
+          <option value="Khó thu">Khó thu</option>
+        </select>
+      </section>
+
+      <section class="actions">
+        <button id="addCustomerBtn">+ Thêm khách</button>
+        <label class="import-btn">
+          Nhập Excel/CSV
+          <input id="importFile" type="file" accept=".xlsx,.xls,.csv" hidden />
+        </label>
+        <button id="downloadTemplateBtn" class="secondary">Tải file mẫu</button>
+        <button id="exportBtn">Xuất CSV</button>
+        <button id="reloadBtn" class="secondary">Tải lại</button>
+      </section>
+
+      <section class="import-note">
+        <b>File nhập hỗ trợ đúng cột file gốc:</b>
+        Ô địa bàn, Tên đơn vị, Địa bàn c3, MA_NVTC, TENNGUOIGACH, MA_KH, THANHTOAN_ID, SDT_GBC, DIACHI_TT, TEN_TT, DONVIQL_ID, TONGNO, CHUKYNO.
+      </section>
+
+      <section id="customerList" class="customer-list"></section>
+    </section>
+  </main>
+
+  <dialog id="customerDialog">
+    <form id="customerForm" method="dialog">
+      <h2 id="formTitle">Thêm khách hàng</h2>
+      <input type="hidden" id="customerId" />
+
+      <div class="form-grid">
+        <label>Ô địa bàn
+          <input id="area" placeholder="VD: Quảng Lập" />
+        </label>
+        <label>Tên đơn vị
+          <input id="unitName" placeholder="VD: Trung tâm..." />
+        </label>
+        <label>Địa bàn c3
+          <input id="diaBanC3" placeholder="VD: Ka Đô / Proh..." />
+        </label>
+        <label>MA_NVTC
+          <input id="maNvtc" placeholder="Mã nhân viên thu cước" />
+        </label>
+        <label>TENNGUOIGACH
+          <input id="collectorName" placeholder="Tên người gạch/thu" />
+        </label>
+        <label>MA_KH
+          <input id="customerCode" placeholder="Mã khách hàng" required />
+        </label>
+        <label>THANHTOAN_ID
+          <input id="paymentId" placeholder="Mã thanh toán" />
+        </label>
+        <label>SDT_GBC
+          <input id="phone" placeholder="Số điện thoại" />
+        </label>
+      </div>
+
+      <label>DIACHI_TT
+        <input id="address" placeholder="Địa chỉ thanh toán" />
+      </label>
+
+      <div class="form-grid">
+        <label>TEN_TT
+          <input id="serviceName" placeholder="Tên thuê bao/thanh toán" />
+        </label>
+        <label>DONVIQL_ID
+          <input id="managementUnitId" placeholder="Đơn vị quản lý ID" />
+        </label>
+        <label>TONGNO
+          <input id="amountDue" type="number" min="0" step="1000" placeholder="Tổng nợ" />
+        </label>
+        <label>CHUKYNO
+          <input id="debtCycle" placeholder="Chu kỳ nợ" />
+        </label>
+        <label>Trạng thái thu
+          <select id="status">
+            <option>Chưa thu</option>
+            <option>Đã thu</option>
+            <option>Hẹn lại</option>
+            <option>Khó thu</option>
+          </select>
+        </label>
+      </div>
+
+      <label>Ghi chú
+        <textarea id="note" rows="3" placeholder="VD: Hẹn chiều mai, không nghe máy..."></textarea>
+      </label>
+
+      <div class="dialog-actions">
+        <button type="button" id="cancelBtn" class="secondary">Hủy</button>
+        <button type="submit">Lưu lên database</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer>
+    <p>Dữ liệu lưu trên Supabase Database. Nên bật RLS và chỉ dùng tài khoản nội bộ.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

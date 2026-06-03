@@ -1,0 +1,7 @@
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <rect width="192" height="192" rx="42" fill="#0066cc"/>
+  <circle cx="96" cy="96" r="62" fill="white" opacity="0.96"/>
+  <text x="96" y="76" text-anchor="middle" font-size="26" font-family="Arial" font-weight="700" fill="#0066cc">VNPT</text>
+  <text x="96" y="111" text-anchor="middle" font-size="30" font-family="Arial" font-weight="700" fill="#e60012">₫</text>
+  <path d="M61 130h70" stroke="#0066cc" stroke-width="12" stroke-linecap="round"/>
+</svg>
