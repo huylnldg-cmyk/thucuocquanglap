@@ -4,5 +4,5 @@
 // 3. Copy anon public key vào SUPABASE_ANON_KEY.
 // 4. Không dùng service_role key ở đây.
 
-window.SUPABASE_URL = "PASTE_SUPABASE_PROJECT_URL_HERE";
-window.SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_PUBLIC_KEY_HERE";
+window.SUPABASE_URL =https://owlznfkdlwvyxxixhueh.supabase.co
+window.SUPABASE_ANON_KEY =sb_publishable_ftyCEAhsrRT6VhZFqmiCiQ_APo0GcKb
